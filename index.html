@@ -1,0 +1,309 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100909">
+<title>SHOP ACC ANH DA ĐEN</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#100909;color:#fff;font:15px Arial,sans-serif}
+header{padding:20px 14px;background:linear-gradient(120deg,#470b10,#150909);border-bottom:1px solid #492024}
+.wrap{max-width:1000px;margin:auto}
+.brand{font-size:25px;font-weight:900;color:#ff3843}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+button{background:#e82b36;color:white;border:0;border-radius:8px;padding:11px 14px;font-weight:bold;cursor:pointer}
+.secondary{background:#302020;border:1px solid #593535}
+main{max-width:1000px;margin:auto;padding:16px 12px}
+h2{font-size:21px}
+.panel,.card{background:#1b1313;border:1px solid #422727;border-radius:12px;padding:15px;margin:12px 0}
+.hero{padding:24px;background:linear-gradient(120deg,#481116,#1d1010);border-radius:14px}
+.muted{color:#bbaaaa;line-height:1.6;font-size:14px}
+input,select,textarea{display:block;width:100%;padding:12px;margin:7px 0 13px;background:#100d0d;border:1px solid #513434;border-radius:8px;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.card{margin:0;padding:0;overflow:hidden}
+.cover{height:95px;display:grid;place-items:center;background:radial-gradient(circle,#79232a,#211010);font-size:40px}
+.body{padding:14px}
+.price{color:#ff535b;font-size:21px;font-weight:bold;margin:12px 0}
+.tag{font-size:12px;color:#ffb3b3}
+.card button{width:100%}
+.hidden{display:none!important}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+hr{border:0;border-top:1px solid #422727;margin:18px 0}
+footer{text-align:center;padding:25px;color:#bbaaaa}
+@media(max-width:480px){.row{grid-template-columns:1fr}.brand{font-size:22px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="brand">🔥 SHOP ACC ANH DA ĐEN</div>
+<p class="muted">Steal an Egg • Shop acc • Cày thuê</p>
+<nav>
+<button onclick="page('home')">Trang chủ</button>
+<button class="secondary" onclick="page('acc')">Shop acc</button>
+<button class="secondary" onclick="page('services')">Cày thuê</button>
+<button class="secondary" onclick="page('orders')">Đơn hàng</button>
+<button class="secondary" onclick="page('account')">Tài khoản</button>
+<button class="secondary" onclick="page('admin')">Admin</button>
+</nav>
+</div></header>
+
+<main>
+<section id="home">
+<div class="hero">
+<h1>SHOP ACC ANH DA ĐEN</h1>
+<p>Săn acc ngon - Giá hợp lý - Dịch vụ cày thuê.</p>
+<p class="muted">Chọn sản phẩm, tạo đơn và thanh toán theo hướng dẫn.</p>
+</div>
+<h2>🎮 Acc nổi bật</h2><div id="featured" class="grid"></div>
+<h2>⚡ Dịch vụ cày thuê</h2><div id="featuredServices" class="grid"></div>
+</section>
+
+<section id="acc" class="hidden">
+<h2>🎮 Shop tài khoản</h2>
+<input id="search" placeholder="Tìm kiếm acc..." oninput="render()">
+<div id="accList" class="grid"></div>
+</section>
+
+<section id="services" class="hidden">
+<h2>⚡ Dịch vụ cày thuê</h2><div id="serviceList" class="grid"></div>
+</section>
+
+<section id="account" class="hidden">
+<h2>👤 Tài khoản khách hàng</h2>
+<div class="panel">
+<label>Tên đăng nhập</label><input id="username" autocomplete="username">
+<label>Mật khẩu</label><input id="password" type="password" autocomplete="current-password">
+<button onclick="register()">Đăng ký</button>
+<button class="secondary" onclick="login()">Đăng nhập</button>
+<button class="secondary" onclick="logout()">Đăng xuất</button>
+<p id="authMsg" class="muted"></p>
+</div>
+</section>
+
+<section id="orders" class="hidden">
+<h2>🛒 Đơn hàng của bạn</h2>
+<input id="orderSearch" placeholder="Nhập mã đơn hàng">
+<button onclick="lookup()">Tra cứu</button>
+<div id="orderResult"></div>
+<div id="myOrders"></div>
+</section>
+
+<section id="admin" class="hidden">
+<h2>🔐 Quản trị shop</h2>
+<div id="adminLogin" class="panel">
+<p class="muted">Mật khẩu demo mặc định: 123456. Không sử dụng mật khẩu demo trên website công khai.</p>
+<input id="adminPw" type="password" placeholder="Mật khẩu Admin">
+<button onclick="adminLogin()">Đăng nhập Admin</button>
+</div>
+<div id="adminArea" class="hidden">
+<div class="panel">
+<h3>➕ Thêm / sửa acc</h3>
+<input id="editId" type="hidden">
+<label>Tên acc</label><input id="an" placeholder="Tên tài khoản">
+<label>Giá VNĐ</label><input id="ap" type="number" min="0">
+<label>Mô tả</label><textarea id="ad"></textarea>
+<label>Trạng thái</label><select id="ast"><option value="available">Còn hàng</option><option value="sold">Đã bán</option></select>
+<button onclick="saveAcc()">Lưu acc</button>
+<button class="secondary" onclick="clearAcc()">Làm mới</button>
+</div>
+<div class="panel">
+<h3>➕ Thêm / sửa dịch vụ</h3>
+<input id="sid" type="hidden">
+<label>Tên dịch vụ</label><input id="sn">
+<label>Giá VNĐ</label><input id="sp" type="number" min="0">
+<label>Mô tả</label><textarea id="sd"></textarea>
+<button onclick="saveService()">Lưu dịch vụ</button>
+</div>
+<div class="panel">
+<h3>💳 Cài đặt nhận tiền</h3>
+<label>Ngân hàng</label><input id="bn">
+<label>Số tài khoản</label><input id="ba">
+<label>Chủ tài khoản</label><input id="bo">
+<label>Liên hệ shop</label><input id="contact" placeholder="https://...">
+<button onclick="saveBank()">Lưu thông tin</button>
+</div>
+<div class="panel"><h3>📦 Quản lý acc</h3><div id="manageAcc"></div></div>
+<div class="panel"><h3>⚡ Quản lý dịch vụ</h3><div id="manageServices"></div></div>
+<div class="panel"><h3>🧾 Xác nhận đơn hàng</h3><div id="manageOrders"></div></div>
+<button class="secondary" onclick="adminLogout()">Thoát Admin</button>
+</div>
+</section>
+
+<section id="checkout" class="hidden">
+<h2>💳 Thanh toán đơn hàng</h2>
+<div class="panel">
+<div id="checkoutInfo"></div>
+<label>Phương thức thanh toán</label>
+<select id="method" onchange="methodChanged()">
+<option value="bank">Chuyển khoản ngân hàng</option>
+<option value="card">Thẻ điện thoại</option>
+</select>
+<div id="bankInfo"></div>
+<div id="cardInfo" class="hidden">
+<label>Nhà mạng</label>
+<select id="provider">
+<option>Viettel</option><option>VinaPhone</option>
+<option>MobiFone</option><option>Nhà mạng khác</option>
+</select>
+<label>Mệnh giá thẻ</label>
+<select id="denom">
+<option value="10000">10.000đ</option>
+<option value="20000">20.000đ</option>
+<option value="50000">50.000đ</option>
+<option value="100000">100.000đ</option>
+<option value="200000">200.000đ</option>
+</select>
+<p class="muted">Thẻ điện thoại cần nhà cung cấp xử lý thẻ có API. Không nhập mã thẻ hoặc số seri vào bản demo này.</p>
+</div>
+<button onclick="submitPayment()">Tạo hướng dẫn thanh toán</button>
+<p class="muted">Đơn chỉ được xác nhận khi Admin kiểm tra giao dịch thật. Bản demo chưa có kết nối API ngân hàng hoặc nhà cung cấp thẻ.</p>
+</div>
+</section>
+</main>
+<footer>SHOP ACC ANH DA ĐEN © 2026</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch{return d}};
+const put=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+let accs=get('shop_accs',[
+{id:'a1',name:'Acc Steal an Egg #01',price:50000,desc:'Acc mẫu, hãy cập nhật thông tin sản phẩm.',status:'available'},
+{id:'a2',name:'Acc Steal an Egg #02',price:80000,desc:'Acc mẫu thứ hai.',status:'available'}
+]);
+let svcs=get('shop_svcs',[
+{id:'s1',name:'Cày nhiệm vụ cơ bản',price:20000,desc:'Gói cày thuê mẫu.'},
+{id:'s2',name:'Cày thuê theo yêu cầu',price:50000,desc:'Thỏa thuận nội dung trước khi đặt.'}
+]);
+let orders=get('shop_orders',[]);
+let bank=get('shop_bank',{name:'',number:'',owner:'',contact:''});
+let users=get('shop_users',[]);
+let currentUser=sessionStorage.getItem('shop_user')||'';
+let admin=false, selected=null;
+const money=n=>Number(n).toLocaleString('vi-VN')+'đ';
+const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const id=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+function persist(){put('shop_accs',accs);put('shop_svcs',svcs);put('shop_orders',orders);put('shop_bank',bank);put('shop_users',users)}
+function page(name){
+['home','acc','services','orders','account','admin','checkout'].forEach(n=>$(n).classList.toggle('hidden',n!==name));
+if(name==='admin')renderAdmin();
+if(name==='orders')renderOrders();
+window.scrollTo({top:0,behavior:'smooth'});
+}
+function card(x,type){
+let sold=type==='acc'&&x.status==='sold';
+return `<article class="card"><div class="cover">🥚</div><div class="body">
+<span class="tag">${sold?'ĐÃ BÁN':type==='acc'?'STEAL AN EGG':'CÀY THUÊ'}</span>
+<h3>${safe(x.name)}</h3><p class="muted">${safe(x.desc)}</p>
+<div class="price">${money(x.price)}</div>
+<button ${sold?'disabled':''} onclick="choose('${type}','${x.id}')">${sold?'Đã bán':'Đặt mua'}</button>
+</div></article>`;
+}
+function render(){
+$('accList').innerHTML=accs.filter(x=>x.name.toLowerCase().includes(($('search').value||'').toLowerCase())).map(x=>card(x,'acc')).join('')||'<p>Chưa có acc.</p>';
+$('serviceList').innerHTML=svcs.map(x=>card(x,'service')).join('')||'<p>Chưa có dịch vụ.</p>';
+$('featured').innerHTML=accs.filter(x=>x.status==='available').slice(0,3).map(x=>card(x,'acc')).join('');
+$('featuredServices').innerHTML=svcs.slice(0,3).map(x=>card(x,'service')).join('');
+}
+function choose(type,itemId){
+if(!currentUser){alert('Vui lòng đăng ký hoặc đăng nhập trước khi đặt hàng.');page('account');return}
+let item=(type==='acc'?accs:svcs).find(x=>x.id===itemId);
+if(!item||item.status==='sold')return;
+selected={type,itemId,name:item.name,price:item.price,code:'AD'+id().toUpperCase(),user:currentUser,status:'Chờ thanh toán',method:''};
+orders.unshift(selected);persist();showCheckout();page('checkout');
+}
+function showCheckout(){
+$('checkoutInfo').innerHTML=`<b>${safe(selected.name)}</b><p>Mã đơn: <b>${safe(selected.code)}</b></p><p>Số tiền: <b>${money(selected.price)}</b></p>`;
+methodChanged();
+}
+function methodChanged(){
+let card=$('method').value==='card';
+$('cardInfo').classList.toggle('hidden',!card);
+$('bankInfo').classList.toggle('hidden',card);
+$('bankInfo').innerHTML=`<p>Ngân hàng: ${safe(bank.name||'Chưa cài')}</p><p>Số tài khoản: ${safe(bank.number||'Chưa cài')}</p><p>Chủ tài khoản: ${safe(bank.owner||'Chưa cài')}</p><p>Nội dung chuyển khoản: <b>${safe(selected?.code||'')}</b></p>`;
+}
+function submitPayment(){
+if(!selected)return;
+const method=$('method').value;
+selected.method=method==='bank'?'Chuyển khoản ngân hàng':'Thẻ '+$('provider').value;
+if(method==='card'){
+const denom=Number($('denom').value);
+if(denom<selected.price){
+alert('Mệnh giá thẻ thấp hơn giá đơn. Hãy chọn mệnh giá phù hợp.');
+return;
+}
+selected.status='Chờ thanh toán qua nhà cung cấp';
+alert('Đơn đã được tạo. Muốn xử lý thẻ thật cần kết nối API nhà cung cấp; chưa có tiền được xác nhận.');
+}else{
+selected.status='Chờ chuyển khoản';
+alert('Hãy chuyển đúng '+money(selected.price)+' và ghi mã '+selected.code+'. Shop sẽ xác nhận sau khi kiểm tra giao dịch thực tế.');
+}
+persist();page('orders');renderOrders();
+}
+function register(){
+const u=$('username').value.trim(),p=$('password').value;
+if(!/^[a-zA-Z0-9_]{3,24}$/.test(u)||p.length<8){$('authMsg').textContent='Tên đăng nhập 3–24 ký tự; mật khẩu tối thiểu 8 ký tự.';return}
+if(users.some(x=>x.u===u)){$('authMsg').textContent='Tên đăng nhập đã tồn tại.';return}
+users.push({u,p});persist();$('authMsg').textContent='Đăng ký demo thành công. Hãy đăng nhập.';
+}
+function login(){
+const u=$('username').value.trim(),p=$('password').value;
+if(!users.some(x=>x.u===u&&x.p===p)){$('authMsg').textContent='Sai tên đăng nhập hoặc mật khẩu.';return}
+currentUser=u;sessionStorage.setItem('shop_user',u);$('authMsg').textContent='Đã đăng nhập: '+u;
+}
+function logout(){currentUser='';sessionStorage.removeItem('shop_user');$('authMsg').textContent='Đã đăng xuất.'}
+function lookup(){
+const o=orders.find(x=>x.code.toLowerCase()===$('orderSearch').value.trim().toLowerCase()&&(admin||x.user===currentUser));
+$('orderResult').innerHTML=o?`<div class="panel">Mã: ${safe(o.code)}<br>Sản phẩm: ${safe(o.name)}<br>Giá: ${money(o.price)}<br>Trạng thái: ${safe(o.status)}</div>`:'<p class="muted">Không tìm thấy đơn hàng.</p>';
+}
+function renderOrders(){
+$('myOrders').innerHTML=orders.filter(o=>admin||o.user===currentUser).map(o=>`<div class="panel"><b>${safe(o.code)}</b> — ${safe(o.name)}<p>${money(o.price)} · ${safe(o.status)}</p></div>`).join('');
+}
+function adminLogin(){
+if($('adminPw').value!==(localStorage.getItem('shop_admin_pw')||'123456'))return alert('Sai mật khẩu Admin.');
+admin=true;$('adminLogin').classList.add('hidden');$('adminArea').classList.remove('hidden');renderAdmin();
+}
+function adminLogout(){admin=false;$('adminLogin').classList.remove('hidden');$('adminArea').classList.add('hidden')}
+function saveAcc(){
+let name=$('an').value.trim(),price=Number($('ap').value);
+if(!name||!Number.isFinite(price)||price<0)return alert('Nhập tên và giá hợp lệ.');
+let obj={id:$('editId').value||('a'+id()),name,price,desc:$('ad').value,status:$('ast').value};
+let i=accs.findIndex(x=>x.id===obj.id);if(i>=0)accs[i]=obj;else accs.unshift(obj);
+persist();clearAcc();render();renderAdmin();
+}
+function clearAcc(){['editId','an','ap','ad'].forEach(k=>$(k).value='');$('ast').value='available'}
+function saveService(){
+let name=$('sn').value.trim(),price=Number($('sp').value);
+if(!name||!Number.isFinite(price)||price<0)return alert('Nhập tên và giá hợp lệ.');
+let obj={id:$('sid').value||('s'+id()),name,price,desc:$('sd').value};
+let i=svcs.findIndex(x=>x.id===obj.id);if(i>=0)svcs[i]=obj;else svcs.unshift(obj);
+persist();render();renderAdmin();
+}
+function saveBank(){
+bank={name:$('bn').value.trim(),number:$('ba').value.trim(),owner:$('bo').value.trim(),contact:$('contact').value.trim()};
+persist();alert('Đã lưu thông tin trên trình duyệt này.');renderAdmin();
+}
+function renderAdmin(){
+if(!admin)return;
+$('bn').value=bank.name;$('ba').value=bank.number;$('bo').value=bank.owner;$('contact').value=bank.contact;
+$('manageAcc').innerHTML=accs.map(a=>`<div class="panel"><b>${safe(a.name)}</b> · ${money(a.price)} · ${a.status}<p><button onclick="editAcc('${a.id}')">Sửa</button> <button class="secondary" onclick="delAcc('${a.id}')">Xóa</button> <button class="secondary" onclick="markSold('${a.id}')">Đổi trạng thái</button></p></div>`).join('');
+$('manageServices').innerHTML=svcs.map(s=>`<div class="panel"><b>${safe(s.name)}</b> · ${money(s.price)}<p><button onclick="editSvc('${s.id}')">Sửa</button> <button class="secondary" onclick="delSvc('${s.id}')">Xóa</button></p></div>`).join('');
+$('manageOrders').innerHTML=orders.map(o=>`<div class="panel"><b>${safe(o.code)}</b> · ${safe(o.name)}<p>${money(o.price)} · ${safe(o.status)}</p><button onclick="confirmOrder('${o.code}')">Xác nhận đã nhận tiền</button></div>`).join('');
+}
+function editAcc(i){let a=accs.find(x=>x.id===i);if(!a)return;$('editId').value=a.id;$('an').value=a.name;$('ap').value=a.price;$('ad').value=a.desc;$('ast').value=a.status;window.scrollTo(0,0)}
+function delAcc(i){if(confirm('Xóa acc?')){accs=accs.filter(a=>a.id!==i);persist();render();renderAdmin()}}
+function markSold(i){let a=accs.find(x=>x.id===i);if(a){a.status=a.status==='sold'?'available':'sold';persist();render();renderAdmin()}}
+function editSvc(i){let s=svcs.find(x=>x.id===i);if(!s)return;$('sid').value=s.id;$('sn').value=s.name;$('sp').value=s.price;$('sd').value=s.desc;window.scrollTo(0,0)}
+function delSvc(i){if(confirm('Xóa dịch vụ?')){svcs=svcs.filter(s=>s.id!==i);persist();render();renderAdmin()}}
+function confirmOrder(code){
+const o=orders.find(x=>x.code===code);if(!o)return;
+if(!confirm('Chỉ xác nhận nếu đã kiểm tra tiền thực nhận trong tài khoản ngân hàng hoặc hệ thống nhà cung cấp. Tiếp tục?'))return;
+o.status='Đã xác nhận thủ công';
+if(o.type==='acc'){const a=accs.find(x=>x.id===o.itemId);if(a)a.status='sold'}
+persist();render();renderAdmin();renderOrders();
+}
+render();
+</script>
+</body>
+</html>
